@@ -18,7 +18,7 @@ int main (){
            //pid=getpid();
            //parentID=getParentID();
            //printf(1,"im child \n");
-            
+           initlock(&lk, "lk");
            //printf(1,“\n This is process %d and the parent id is %d \n”,pid,parentID);
            acquire(&lk);
            printf(1,"This is process %d ",getpid());
