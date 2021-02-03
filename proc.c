@@ -532,3 +532,11 @@ procdump(void)
     cprintf("\n");
   }
 }
+
+//ADDED CODE BY US
+int getParentID (){
+
+  struct proc *curproc = myproc();
+  return curproc->pid;
+
+}

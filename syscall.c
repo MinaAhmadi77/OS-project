@@ -1,3 +1,4 @@
+
 #include "types.h"
 #include "defs.h"
 #include "param.h"
@@ -142,4 +143,14 @@ syscall(void)
             curproc->pid, curproc->name, num);
     curproc->tf->eax = -1;
   }
+}
+
+
+//ADDED CODES BY US
+
+int sys_getParentID(void){
+
+
+  return getParentID();
+
 }
