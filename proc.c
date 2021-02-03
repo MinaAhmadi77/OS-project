@@ -537,6 +537,6 @@ procdump(void)
 int getParentID (){
 
   struct proc *curproc = myproc();
-  return curproc->pid;
+  return curproc->parent->pid;
 
 }
