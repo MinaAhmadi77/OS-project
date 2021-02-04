@@ -154,3 +154,10 @@ int sys_getParentID(void){
   return getParentID();
 
 }
+
+int * sys_getChildren (void){
+
+  return getChildren();
+
+
+}

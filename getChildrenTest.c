@@ -1,14 +1,7 @@
 #include "types.h"
-//#include "defs.h"
 #include "stat.h"
 #include "user.h"
-//#include "spinlock.h"
-
-
-/*struct {
-  struct spinlock lock;
-  
-} mylock;*/
+#include "stddef.h"
 
 
 int main (){
@@ -27,9 +20,19 @@ int main (){
            //pid=getpid();
            //parentID=getParentID();
            //acquire(&mylock.lock);
-          
+           int * children=NULL;
+           int * p=NULL;
+           p=children;
+           children=getChildren();
            printf(1,"This is process %d ",getpid());
-           printf(1,"and the parent id is %d \n",getParentID());
+           printf(1," and children are ");
+           for(int i=0 ; i<(sizeof(children)/sizeof(int *))-1;i++){
+
+               printf(1,"%d/",*p);
+               p+=sizeof(int);
+           }
+            printf(1,"%d",*p);
+            p+=sizeof(int);
            
            //release(&mylock.lock);
 
