@@ -18,7 +18,7 @@ void printChildren(){
 int main (){
 
     //int ppid=getpid();
-    printf(1,"im root %d \n",getpid());
+    //printf(1,"im root %d \n",getpid());
 
 
     /*    if(fork()){
