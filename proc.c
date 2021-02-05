@@ -541,33 +541,35 @@ int getParentID (){
 
 }
 
-int getChildren(){//pgdir khode process chi?????????
+int getChildren(){
 
   struct proc *p;
   struct proc *curproc = myproc();
   int counter=0;
   int multiplier=1;
   int children=0;
-  acquire(&ptable.lock);
+ 
+  //acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->parent->pid == curproc->pid){
 
-    for(int i=1 ; i<=counter ; i++){
+    
+    if((p->parent->pid) == (curproc->pid)){
+      
+      for(int i=1 ; i<=counter ; i++){
 
-        multiplier*=100;
+          multiplier*=100;
 
 
     }
       multiplier=1;
-      children+=(p->pid) * multiplier;
+      children+=((p->pid) * multiplier);
       counter++;
     }
     
   }
-  release(&ptable.lock);
-  ///////if 0
+ // release(&ptable.lock);
+ 
  
   return children;
-
 
 }
