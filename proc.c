@@ -549,10 +549,9 @@ int getChildren(){
   int multiplier=1;
   int children=0;
  
-  //acquire(&ptable.lock);
+  acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 
-    
     if((p->parent->pid) == (curproc->pid)){
       
       for(int i=1 ; i<=counter ; i++){
@@ -567,7 +566,7 @@ int getChildren(){
     }
     
   }
- // release(&ptable.lock);
+ release(&ptable.lock);
  
  
   return children;
