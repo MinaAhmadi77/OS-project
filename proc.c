@@ -560,13 +560,14 @@ int getChildren(){
 
 
     }
-      multiplier=1;
+      
       children+=((p->pid) * multiplier);
+      multiplier=1;
       counter++;
     }
     
   }
- release(&ptable.lock);
+  release(&ptable.lock);
  
  
   return children;
