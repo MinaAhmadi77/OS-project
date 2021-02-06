@@ -576,9 +576,9 @@ int getChildren(){
 }
 int getSyscallCounter(int number){
   //int number=24;
- // struct proc *curproc = myproc();
-  //int num = curproc->tf->eax;
-  //int counter=0;
+  struct proc *curproc = myproc();
+// int num = curproc->tf->eax;
+  // int counter=0;
   // for(int i=0;i<30;i++){
     
   //   if(number==curproc->numsyscall[i])
@@ -587,5 +587,5 @@ int getSyscallCounter(int number){
  
   //counter++;
  // int number=0;
-  return number;
+  return curproc->numsyscall[number-1];
 }

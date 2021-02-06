@@ -4,12 +4,15 @@
 
 
 
+int main (int argc, char *argv[]){
 
-int main (){
+     int input=atoi(argv[1]);
 
-   getSyscallCounter(6);
-
-    printf(1," the syscall counter is %d \n",getSyscallCounter(6));
+    getParentID();
+    getParentID();
+    getParentID();
+    printf(1," the syscall counter is %d \n",getSyscallCounter(input));
+  
          
      
 
