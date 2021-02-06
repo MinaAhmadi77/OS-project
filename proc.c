@@ -573,3 +573,7 @@ int getChildren(){
   return children;
 
 }
+int getSyscallCounter(int num){
+  int number=0;
+  return number;
+}
