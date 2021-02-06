@@ -46,7 +46,7 @@ trap(struct trapframe *tf)
     return;
   }
 
-  switch(tf->trapno){
+ switch(tf->trapno){
   case T_IRQ0 + IRQ_TIMER:
     if(cpuid() == 0){
       acquire(&tickslock);
@@ -56,6 +56,17 @@ trap(struct trapframe *tf)
     }
     lapiceoi();
     break;
+  ///alternative
+ /* case T_IRQ0 + QUANTUM:
+    if(cpuid() == 0){
+      acquire(&tickslock);
+      ticks++;
+      wakeup(&ticks);
+      release(&tickslock);
+    }
+    lapiceoi();
+    break;
+*/
   case T_IRQ0 + IRQ_IDE:
     ideintr();
     lapiceoi();
@@ -105,6 +116,11 @@ trap(struct trapframe *tf)
   if(myproc() && myproc()->state == RUNNING &&
      tf->trapno == T_IRQ0+IRQ_TIMER)
     yield();
+
+  //alternative
+  /*if(myproc() && myproc()->state == RUNNING &&
+     tf->trapno == T_IRQ0+QUANTUM)
+    yield();*/
 
   // Check if the process has been killed since we yielded
   if(myproc() && myproc()->killed && (tf->cs&3) == DPL_USER)
