@@ -591,3 +591,12 @@ int getSyscallCounter(int number){
  // int number=0;
   return curproc->numsyscall[number-1];
 }
+
+int setPriority(int inPriority){
+
+  struct proc *curproc = myproc();
+  curproc->priority=inPriority;
+
+  return 0; ///???
+
+}

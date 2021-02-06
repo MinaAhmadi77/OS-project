@@ -108,6 +108,7 @@ extern int sys_uptime(void);
 extern int sys_getParentID(void);
 extern int sys_getChildren(void);
 extern int sys_getSyscallCounter(void);
+extern int sys_setPriority(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -134,6 +135,7 @@ static int (*syscalls[])(void) = {
 [SYS_getParentID]  sys_getParentID,
 [SYS_getChildren]  sys_getChildren,
 [SYS_getSyscallCounter] sys_getSyscallCounter,
+[SYS_setPriority]  sys_setPriority,
 };
 
 void
@@ -159,6 +161,4 @@ syscall(void)
   }
 }
 
-
-//ADDED CODES BY US
 

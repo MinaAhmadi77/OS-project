@@ -114,3 +114,14 @@ int  sys_getSyscallCounter(void){
   return getSyscallCounter(n);
 
 }
+
+int sys_setPriority(){
+
+  int inPriority;
+  
+  if(argint(0, &inPriority) < 0)
+   return -1;
+
+  return setPriority(inPriority);
+
+}
