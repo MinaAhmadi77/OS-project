@@ -115,7 +115,7 @@ int  sys_getSyscallCounter(void){
 
 }
 
-int sys_setPriority(){
+int sys_setPriority(void){
 
   int inPriority;
   
