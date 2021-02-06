@@ -7,6 +7,7 @@
 #include "proc.h"
 #include "x86.h"
 #include "syscall.h"
+#include "stddef.h"
 
 // User code makes a system call with INT T_SYSCALL.
 // System call number in %eax.
@@ -106,6 +107,7 @@ extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_getParentID(void);
 extern int sys_getChildren(void);
+extern int sys_getSyscallCounter(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -131,16 +133,25 @@ static int (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_getParentID]  sys_getParentID,
 [SYS_getChildren]  sys_getChildren,
+[SYS_getSyscallCounter] sys_getSyscallCounter,
 };
 
 void
 syscall(void)
 {
   int num;
+  int counter;
+  int f;
   struct proc *curproc = myproc();
+  if((f=curproc->counter)>=0)
+  counter=curproc->counter;
+  else
+  counter=0;
 
   num = curproc->tf->eax;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
+    curproc->numsyscall[counter]=num;
+    curproc->counter=(curproc->counter)+1;
     curproc->tf->eax = syscalls[num]();
   } else {
     cprintf("%d %s: unknown sys call %d\n",
@@ -152,16 +163,3 @@ syscall(void)
 
 //ADDED CODES BY US
 
-int sys_getParentID(void){
-
-
-  return getParentID();
-
-}
-
-int  sys_getChildren (void){
-
-  return getChildren();
-
-
-}

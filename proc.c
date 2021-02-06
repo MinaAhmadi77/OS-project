@@ -7,6 +7,7 @@
 #include "proc.h"
 #include "spinlock.h"
 
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -573,7 +574,18 @@ int getChildren(){
   return children;
 
 }
-int getSyscallCounter(int num){
-  int number=0;
+int getSyscallCounter(int number){
+  //int number=24;
+ // struct proc *curproc = myproc();
+  //int num = curproc->tf->eax;
+  //int counter=0;
+  // for(int i=0;i<30;i++){
+    
+  //   if(number==curproc->numsyscall[i])
+  //   counter++;
+  // }
+ 
+  //counter++;
+ // int number=0;
   return number;
 }

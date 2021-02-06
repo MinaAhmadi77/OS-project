@@ -89,3 +89,29 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+
+//ADDED CODES BY US
+int sys_getParentID(void){
+
+
+  return getParentID();
+
+}
+
+int  sys_getChildren (void){
+
+  return getChildren();
+
+
+}
+int  sys_getSyscallCounter(void){
+
+  int n;
+
+  argint(0, &n);
+ 
+  return getSyscallCounter(n);
+
+
+}
