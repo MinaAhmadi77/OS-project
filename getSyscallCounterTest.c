@@ -11,6 +11,9 @@ int main (int argc, char *argv[]){
     getParentID();
     getParentID();
     getParentID();
+    getChildren();
+    getChildren();
+    getChildren();
     printf(1," the syscall counter is %d \n",getSyscallCounter(input));
   
          
