@@ -56,17 +56,6 @@ trap(struct trapframe *tf)
     }
     lapiceoi();
     break;
-  ///alternative
- /* case T_IRQ0 + QUANTUM:
-    if(cpuid() == 0){
-      acquire(&tickslock);
-      ticks++;
-      wakeup(&ticks);
-      release(&tickslock);
-    }
-    lapiceoi();
-    break;
-*/
   case T_IRQ0 + IRQ_IDE:
     ideintr();
     lapiceoi();
@@ -114,13 +103,14 @@ trap(struct trapframe *tf)
   // Force process to give up CPU on clock tick.
   // If interrupts were on while locks held, would need to check nlock.
   if(myproc() && myproc()->state == RUNNING &&
-     tf->trapno == T_IRQ0+IRQ_TIMER)
-    yield();
-
-  //alternative
-  /*if(myproc() && myproc()->state == RUNNING &&
-     tf->trapno == T_IRQ0+QUANTUM)
-    yield();*/
+     tf->trapno == T_IRQ0+IRQ_TIMER){
+    
+    int current = myproc()->current_slice;
+    if ( current ) 
+      myproc()->current_slice = current - 1;
+    else 
+      yield();
+  }
 
   // Check if the process has been killed since we yielded
   if(myproc() && myproc()->killed && (tf->cs&3) == DPL_USER)
