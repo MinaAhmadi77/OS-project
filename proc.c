@@ -629,20 +629,12 @@ int getChildren(){
 
 }
 int getSyscallCounter(int number){
-  //int number=24;
+
   struct proc *curproc = myproc();
-// int num = curproc->tf->eax;
-  // int counter=0;
-  // for(int i=0;i<30;i++){
-    
-  //   if(number==curproc->numsyscall[i])
-  //   counter++;
-  // }
- 
-  //counter++;
- // int number=0;
+
   return curproc->numsyscall[number-1];
 }
+
 
 int setPriority(int inPriority){
 
@@ -652,6 +644,12 @@ int setPriority(int inPriority){
   struct proc *curproc = myproc();
   curproc->priority=inPriority;
 
+  return curproc->priority; ///???
+
+}
+int getPriority(){
+   
+  struct proc *curproc = myproc();
   return curproc->priority; ///???
 
 }

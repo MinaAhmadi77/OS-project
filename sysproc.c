@@ -125,3 +125,10 @@ int sys_setPriority(void){
   return setPriority(inPriority);
 
 }
+
+int sys_getPriority(void){
+
+ 
+  return getPriority();
+
+}
