@@ -89,7 +89,9 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-
+  ///alt
+  p->inPriority=3; ////default priority
+  ////alt
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -344,8 +346,9 @@ scheduler(void)
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
+      //alt
       p->current_slice = QUANTUM; ///ADDED BY US
-
+      ///alt
       swtch(&(c->scheduler), p->context);
       switchkvm();
 
