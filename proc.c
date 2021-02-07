@@ -90,7 +90,7 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   ///alt
-  p->inPriority=3; ////default priority
+  p->priority=3; ////default priority
   ////alt
   release(&ptable.lock);
 
