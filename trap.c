@@ -104,20 +104,20 @@ trap(struct trapframe *tf)
   // If interrupts were on while locks held, would need to check nlock.
   
   /////////alt
-  if(myproc() && myproc()->state == RUNNING &&
-     tf->trapno == T_IRQ0+IRQ_TIMER){
-    int current = myproc()->current_slice;
-    if ( current ) 
-      myproc()->current_slice = current - 1;
-    else 
-      yield();
-  }
+  // if(myproc() && myproc()->state == RUNNING &&
+  //    tf->trapno == T_IRQ0+IRQ_TIMER){
+  //   int current = myproc()->current_slice;
+  //   if ( current ) 
+  //     myproc()->current_slice = current - 1;
+  //   else 
+  //     yield();
+  // }
  //////alt
 
-//  if(myproc() && myproc()->state == RUNNING &&
-//      tf->trapno == T_IRQ0+IRQ_TIMER){
-//         yield();
-//      }
+ if(myproc() && myproc()->state == RUNNING &&
+     tf->trapno == T_IRQ0+IRQ_TIMER){
+        yield();
+     }
   // Check if the process has been killed since we yielded
   if(myproc() && myproc()->killed && (tf->cs&3) == DPL_USER)
     exit();
