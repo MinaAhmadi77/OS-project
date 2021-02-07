@@ -1,4 +1,4 @@
-int policy;//policy=0 default round robin ; policy=1 round robin Quantom ; policy=2 priority
+uint policy;//policy=0 default round robin ; policy=1 round robin Quantom ; policy=2 priority
 struct buf;
 struct context;
 struct file;
@@ -126,6 +126,7 @@ int             getChildren(void);
 int             getSyscallCounter(int);
 int             setPriority(int);
 int             getPriority(void);
+int             changePolicy(int);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

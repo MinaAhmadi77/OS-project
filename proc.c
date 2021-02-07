@@ -622,3 +622,7 @@ int getPriority(){
   return curproc->priority; ///???
 
 }
+int changePolicy(int plcy){
+  
+  return policy;
+}

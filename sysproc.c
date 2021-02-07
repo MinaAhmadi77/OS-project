@@ -132,3 +132,11 @@ int sys_getPriority(void){
   return getPriority();
 
 }
+int sys_changePolicy(void){
+  
+  int plcy;
+  
+  if(argint(0, &plcy) < 0)
+   return -1;
+  return changePolicy(plcy);
+}
