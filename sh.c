@@ -3,6 +3,7 @@
 #include "types.h"
 #include "user.h"
 #include "fcntl.h"
+#include "stddef.h"
 
 // Parsed command representation
 #define EXEC  1
@@ -93,7 +94,7 @@ runcmd(struct cmd *cmd)
     lcmd = (struct listcmd*)cmd;
     if(fork1() == 0)
       runcmd(lcmd->left);
-    wait();
+    wait(NULL,NULL,NULL);
     runcmd(lcmd->right);
     break;
 
@@ -117,8 +118,8 @@ runcmd(struct cmd *cmd)
     }
     close(p[0]);
     close(p[1]);
-    wait();
-    wait();
+    wait(NULL,NULL,NULL);
+    wait(NULL,NULL,NULL);
     break;
 
   case BACK:
@@ -166,7 +167,7 @@ main(void)
     }
     if(fork1() == 0)
       runcmd(parsecmd(buf));
-    wait();
+    wait(NULL,NULL,NULL);
   }
   exit();
 }

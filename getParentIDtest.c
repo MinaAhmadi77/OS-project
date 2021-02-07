@@ -1,6 +1,7 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
+#include "stddef.h"
 
 
 
@@ -18,7 +19,8 @@ int main (){
        }
     if(pid>0){
       
-        wait();
+        
+        wait(NULL,NULL,NULL);
         pid=fork();
         if(pid == 0){
 
@@ -26,8 +28,8 @@ int main (){
          
          }
         if(pid>0){
-
-            wait();
+            //waitAndSetTimes(NULL,NULL,NULL);
+            wait(NULL,NULL,NULL);
         }
     
        }

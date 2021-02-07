@@ -1,7 +1,7 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
-
+#include "stddef.h"
 
 void printChildren(){
 
@@ -40,7 +40,7 @@ int main (){
         
                     
        }  
-      while(wait()!=-1){}
+      while(wait(NULL,NULL,NULL)!=-1){}
       sleep(1);
 
     exit();

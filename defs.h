@@ -117,7 +117,7 @@ void            sched(void);
 void            setproc(struct proc*);
 void            sleep(void*, struct spinlock*);
 void            userinit(void);
-int             wait(void);
+int             wait(int * , int * ,int *);
 void            wakeup(void*);
 void            yield(void);
 void            calculate_ready_processes(void);
@@ -129,9 +129,10 @@ int             getSyscallCounter(int);
 int             setPriority(int);
 int             getPriority(void);
 int             changePolicy(int);
-int             cpuBurstTime(void);
-int             turnAroundTime(void);
-int             waitingTime(void);
+//int             waitAndSetTimes(void *, void *, void *);
+int             cpuBurstTime(int);
+int             turnAroundTime(int);
+int             waitingTime(int);
       
 
 // swtch.S

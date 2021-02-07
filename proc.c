@@ -294,18 +294,18 @@ exit(void)
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
 int
-wait(void)
+wait(int * cpuBurst , int * turnaround , int * waiting)
 {
   struct proc *p;
   int havekids, pid;
   struct proc *curproc = myproc();
-  int counter=0;
+ // int counter=0;
   acquire(&ptable.lock);
   for(;;){
     // Scan through table looking for exited children.
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      counter++;
+      //counter++;
       if(p->parent != curproc)
         continue;
       havekids = 1;
@@ -314,9 +314,9 @@ wait(void)
 
         if(policy == 1){
           
-          tVariables.cbt[counter]=p->runningTime;
-          tVariables.turnaround[counter]=p->readyTime + p->sleepingTime + p->runningTime;
-          tVariables.waiting[counter]=p->readyTime + p->sleepingTime;
+          *cpuBurst=p->runningTime;
+          *turnaround=p->readyTime + p->sleepingTime + p->runningTime;
+          *waiting=p->readyTime + p->sleepingTime;
         }
         // Found one.
        // cprintf("cbt after zombie %d",p->runningTime);
@@ -347,6 +347,8 @@ wait(void)
     sleep(curproc, &ptable.lock);  //DOC: wait-sleep
   }
 }
+
+
 
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
@@ -601,14 +603,14 @@ procdump(void)
 //ADDED CODE BY US
 ///methods
 
-int findProcIndex (){
+int findProcIndex (int inputPID){
 
   struct proc *p;
   int counter=0;
   acquire(&ptable.lock);
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
         counter ++;
-        if(p->pid == myproc()->pid){
+        if(p->pid == inputPID){
           break;
         }
       
@@ -626,19 +628,22 @@ void processingTimeVariables(void){
   acquire(&ptable.lock);
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 
-      if((p->state) == (RUNNING)){
+      switch (p->state){
+
+      case RUNNING:
         (p->runningTime)++;
-       
-      }
-      else if((p->state) == (SLEEPING)){
+        break;
+
+      case SLEEPING:
         (p->sleepingTime)++;
-       // cprintf("sleeping time %d\n",p->sleepingTime);
-      }
-      else if((p->state) == (RUNNABLE)){
+        break;
+
+      case RUNNABLE:
         (p->readyTime)++;
-        //cprintf("ready time %d\n",p->readyTime);
+        break;
+      default :
+        break;
       }
-    
   }
   release(&ptable.lock);
 
@@ -720,31 +725,31 @@ int changePolicy(int plcy){
 }
 
 
-int cpuBurstTime(){
+int cpuBurstTime(int inputPID){
   
   // struct proc *curproc = myproc();
   // return  curproc->runningTime; 
   
-  int res=tVariables.cbt[findProcIndex()];
+  int res=tVariables.cbt[findProcIndex(inputPID)];
   //tVariables.cbt[findProcIndex()]=0;
         
   return  res; 
 
 
 }
-int turnAroundTime(){
+int turnAroundTime(int inputPID){
   
-  int res=tVariables.turnaround[findProcIndex()];
+  int res=tVariables.turnaround[findProcIndex(inputPID)];
   //tVariables.turnaround[findProcIndex()]=0;
         
   return  res; 
 
 
 }
-int waitingTime(void){
+int waitingTime(int inputPID){
   
   
-  int res=tVariables.waiting[findProcIndex()];
+  int res=tVariables.waiting[findProcIndex(inputPID)];
   //tVariables.waiting[findProcIndex()]=0;
   
   return  res; 

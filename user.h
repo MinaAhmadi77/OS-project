@@ -4,7 +4,7 @@ struct rtcdate;
 // system calls
 int fork(void);
 int exit(void) __attribute__((noreturn));
-int wait(void);
+int wait(int * ,int *,int *);
 int pipe(int*);
 int write(int, const void*, int);
 int read(int, void*, int);
@@ -29,9 +29,10 @@ int getSyscallCounter(int);
 int setPriority(int);
 int getPriority(void);
 int changePolicy(int);
-int cpuBurstTime(void);
-int turnAroundTime(void);
-int waitingTime(void);
+//int waitAndSetTimes(void *, void *, void *);
+int cpuBurstTime(int);
+int turnAroundTime(int);
+int waitingTime(int);
 
 // ulib.c
 int stat(const char*, struct stat*);

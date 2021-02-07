@@ -23,7 +23,16 @@ sys_exit(void)
 int
 sys_wait(void)
 {
-  return wait();
+
+
+  int *cpuBurst, *turnaround, *waiting;
+  if (argptr(0, (void*)&cpuBurst, sizeof(cpuBurst)) < 0)
+    return -1;
+  if (argptr(1, (void*)&turnaround, sizeof(turnaround)) < 0)
+    return -1;
+  if (argptr(2, (void*)&waiting, sizeof(waiting)) < 0)
+    return -1;
+  return wait(cpuBurst,turnaround,waiting);
 }
 
 int
@@ -142,15 +151,40 @@ int sys_changePolicy(void){
 }
 
 int sys_cpuBurstTime(void){
+  
+  int pid;
+  if(argint(0, &pid) < 0)
+   return -1;
 
-  return cpuBurstTime();
+  return cpuBurstTime(pid);
 }
 int sys_turnAroundTime(void){
 
-  return turnAroundTime();
+  int pid;
+  if(argint(0, &pid) < 0)
+   return -1;
+
+  return turnAroundTime(pid);
 }
 int sys_waitingTime(void){
-
   
-  return waitingTime();
+  int pid;
+  if(argint(0, &pid) < 0)
+   return -1;
+  
+  return waitingTime(pid);
 }
+
+// int sys_waitAndSetTimes(void){
+
+//   int *cbt, *tat, *wt;
+//   if (argptr(0, (void*)&cbt, sizeof(cbt)) < 0)
+//     return -1;
+//   if (argptr(1, (void*)&tat, sizeof(cbt)) < 0)
+//     return -1;
+//   if (argptr(2, (void*)&wt, sizeof(wt)) < 0)
+//     return -1;
+  
+
+//   return waitAndSetTimes(cbt, tat, wt);
+// }

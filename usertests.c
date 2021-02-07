@@ -7,6 +7,7 @@
 #include "syscall.h"
 #include "traps.h"
 #include "memlayout.h"
+#include "stddef.h"
 
 char buf[8192];
 char name[3];
@@ -66,7 +67,7 @@ exitiputtest(void)
     }
     exit();
   }
-  wait();
+  wait(NULL,NULL,NULL);
   printf(stdout, "exitiput test ok\n");
 }
 
@@ -109,7 +110,7 @@ openiputtest(void)
     printf(stdout, "unlink failed\n");
     exit();
   }
-  wait();
+  wait(NULL,NULL,NULL);
   printf(stdout, "openiput test ok\n");
 }
 
@@ -346,7 +347,7 @@ pipe1(void)
       exit();
     }
     close(fds[0]);
-    wait();
+    wait(NULL,NULL,NULL);
   } else {
     printf(1, "fork() failed\n");
     exit();
@@ -394,9 +395,9 @@ preempt(void)
   kill(pid2);
   kill(pid3);
   printf(1, "wait... ");
-  wait();
-  wait();
-  wait();
+  wait(NULL,NULL,NULL);
+  wait(NULL,NULL,NULL);
+  wait(NULL,NULL,NULL);
   printf(1, "preempt ok\n");
 }
 
@@ -413,7 +414,7 @@ exitwait(void)
       return;
     }
     if(pid){
-      if(wait() != pid){
+      if(wait(NULL,NULL,NULL) != pid){
         printf(1, "wait wrong pid\n");
         return;
       }
@@ -453,7 +454,7 @@ mem(void)
     printf(1, "mem ok\n");
     exit();
   } else {
-    wait();
+    wait(NULL,NULL,NULL);
   }
 }
 
@@ -486,7 +487,7 @@ sharedfd(void)
   if(pid == 0)
     exit();
   else
-    wait();
+    wait(NULL,NULL,NULL);
   close(fd);
   fd = open("sharedfd", 0);
   if(fd < 0){
@@ -552,7 +553,7 @@ fourfiles(void)
   }
 
   for(pi = 0; pi < 4; pi++){
-    wait();
+    wait(NULL,NULL,NULL);
   }
 
   for(i = 0; i < 2; i++){
@@ -620,7 +621,7 @@ createdelete(void)
   }
 
   for(pi = 0; pi < 4; pi++){
-    wait();
+    wait(NULL,NULL,NULL);
   }
 
   name[0] = name[1] = name[2] = 0;
@@ -794,7 +795,7 @@ concreate(void)
     if(pid == 0)
       exit();
     else
-      wait();
+      wait(NULL,NULL,NULL);
   }
 
   memset(fa, 0, sizeof(fa));
@@ -846,7 +847,7 @@ concreate(void)
     if(pid == 0)
       exit();
     else
-      wait();
+      wait(NULL,NULL,NULL);
   }
 
   printf(1, "concreate ok\n");
@@ -881,7 +882,7 @@ linkunlink()
   }
 
   if(pid)
-    wait();
+    wait(NULL,NULL,NULL);
   else
     exit();
 
@@ -1397,13 +1398,13 @@ forktest(void)
   }
 
   for(; n > 0; n--){
-    if(wait() < 0){
+    if(wait(NULL,NULL,NULL) < 0){
       printf(1, "wait stopped early\n");
       exit();
     }
   }
 
-  if(wait() != -1){
+  if(wait(NULL,NULL,NULL) != -1){
     printf(1, "wait got too many\n");
     exit();
   }
@@ -1446,7 +1447,7 @@ sbrktest(void)
   }
   if(pid == 0)
     exit();
-  wait();
+  wait(NULL,NULL,NULL);
 
   // can one grow address space to something big?
 #define BIG (100*1024*1024)
@@ -1506,7 +1507,7 @@ sbrktest(void)
       kill(ppid);
       exit();
     }
-    wait();
+    wait(NULL,NULL,NULL);
   }
 
   // if we run the system out of memory, does it clean up the last
@@ -1533,7 +1534,7 @@ sbrktest(void)
     if(pids[i] == -1)
       continue;
     kill(pids[i]);
-    wait();
+    wait(NULL,NULL,NULL);
   }
   if(c == (char*)0xffffffff){
     printf(stdout, "failed sbrk leaked memory\n");
@@ -1577,7 +1578,7 @@ validatetest(void)
     sleep(0);
     sleep(0);
     kill(pid);
-    wait();
+    wait(NULL,NULL,NULL);
 
     // try to crash the kernel by passing in a bad string pointer
     if(link("nosuchfile", (char*)p) != -1){
@@ -1632,7 +1633,7 @@ bigargtest(void)
     printf(stdout, "bigargtest: fork failed\n");
     exit();
   }
-  wait();
+  wait(NULL,NULL,NULL);
   fd = open("bigarg-ok", 0);
   if(fd < 0){
     printf(stdout, "bigarg test failed!\n");
@@ -1720,7 +1721,7 @@ uio()
     printf (1, "fork failed\n");
     exit();
   }
-  wait();
+  wait(NULL,NULL,NULL);
   printf(1, "uio test done\n");
 }
 
