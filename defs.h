@@ -120,6 +120,9 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
+void            calculate_ready_processes(void);
+void            calculate_sleeping_processes(void);
+void            processingTimeVariables(void);
 int             getParentID(void);
 int             getChildren(void);
 int             getSyscallCounter(int);
@@ -129,6 +132,7 @@ int             changePolicy(int);
 int             cpuBurstTime(void);
 int             turnAroundTime(void);
 int             waitingTime(void);
+      
 
 // swtch.S
 void            swtch(struct context**, struct context*);

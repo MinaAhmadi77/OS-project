@@ -186,6 +186,7 @@ UPROGS=\
 	_getSyscallCounterTest\
 	_setPriorityTest\
 	_changePolicyTest\
+	_roundRobinTest\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -260,6 +261,7 @@ EXTRA=\
 	getSyscallCounterTest.c\
 	setPriorityTest.c\
 	changePolicyTest.c\
+	roundRobinTest.c\
 	printf.c umalloc.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\

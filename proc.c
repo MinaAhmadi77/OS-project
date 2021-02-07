@@ -92,6 +92,7 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   ///alt
+
   p->priority=3; ////default priority
   ////alt
   release(&ptable.lock);
@@ -154,8 +155,7 @@ userinit(void)
   acquire(&ptable.lock);
 
   p->state = RUNNABLE;
-  p->readyTime=ticks;//////
-  p->sleepingTime=p->readyTime - p->sleepingTime;/////
+  
 
 
   release(&ptable.lock);
@@ -223,8 +223,8 @@ fork(void)
   acquire(&ptable.lock);
 
   np->state = RUNNABLE;
-  np->readyTime=ticks;/////
-  np->sleepingTime=np->readyTime - np->sleepingTime;/////
+  
+
 
   release(&ptable.lock);
 
@@ -274,7 +274,6 @@ exit(void)
   // Jump into the scheduler, never to return.
   /////alt
   curproc->terminationTime=ticks;
-  curproc->runningTime=curproc->terminationTime - curproc->runningTime;
   /////alt
   curproc->state = ZOMBIE;
   sched();
@@ -373,7 +372,7 @@ scheduler(void)
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
-      p->runningTime=ticks;
+     
       //alt
       if(policy==1)
         p->current_slice = QUANTUM; ///ADDED BY US
@@ -423,8 +422,6 @@ yield(void)
 {
   acquire(&ptable.lock);  //DOC: yieldlock
   myproc()->state = RUNNABLE;
-  myproc()->readyTime=ticks;/////
-  myproc()->sleepingTime=myproc()->readyTime - myproc()->sleepingTime;/////
   sched();
   release(&ptable.lock);
 }
@@ -476,7 +473,7 @@ sleep(void *chan, struct spinlock *lk)
   // Go to sleep.
   p->chan = chan;
   p->state = SLEEPING;
-  p->sleepingTime=ticks;/////
+ 
 
   sched();
 
@@ -501,8 +498,7 @@ wakeup1(void *chan)
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == SLEEPING && p->chan == chan){
       p->state = RUNNABLE;
-      p->readyTime=ticks;/////
-      p->sleepingTime=p->readyTime - p->sleepingTime;/////
+     
       
     }
   }
@@ -532,8 +528,6 @@ kill(int pid)
       // Wake process from sleep if necessary.
       if(p->state == SLEEPING){
         p->state = RUNNABLE;
-        p->readyTime=ticks;/////
-        p->sleepingTime=p->readyTime - p->sleepingTime;/////
       }
       release(&ptable.lock);
       return 0;
@@ -581,6 +575,77 @@ procdump(void)
 }
 
 //ADDED CODE BY US
+///methods
+
+
+void calculate_ready_processes(void){
+
+
+  struct proc *p;
+  
+
+  acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+
+      if((p->state) == (RUNNABLE)){
+        (p->readyTime)++;
+        //cprintf("ready time %d\n",p->readyTime);
+      }
+    
+  }
+  release(&ptable.lock);
+
+  
+}
+
+
+void calculate_sleeping_processes(void){
+
+  struct proc *p;
+  
+
+  acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+
+      if((p->state) == (SLEEPING)){
+        (p->sleepingTime)++;
+       // cprintf("sleeping time %d\n",p->sleepingTime);
+      }
+    
+  }
+  release(&ptable.lock);
+  
+}
+void calculate_running_processes(void){
+
+  struct proc *p;
+  
+
+  acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+
+      if((p->state) == (RUNNING)){
+        (p->runningTime)++;
+       // cprintf("sleeping time %d\n",p->sleepingTime);
+      }
+    
+  }
+  release(&ptable.lock);
+  
+}
+
+void processingTimeVariables(void){
+
+  if(myproc()) {
+
+        calculate_running_processes();
+        calculate_sleeping_processes();
+        calculate_ready_processes();
+      }
+
+}
+
+//system calls
 int getParentID (){
 
   struct proc *curproc = myproc();
@@ -664,14 +729,14 @@ int cpuBurstTime(){
 int turnAroundTime(){
   
   struct proc *curproc = myproc();
-  
-  return  curproc->terminationTime -  curproc->creationTime; 
+  //cprintf("sleeping time ???????????????????????? %d\n",curproc->sleepingTime);
+  return  (curproc->readyTime + curproc->sleepingTime + curproc->runningTime); 
 
 }
-int waitingTime(){
+int waitingTime(void){
    
   struct proc *curproc = myproc();
   
-  return curproc->readyTime -  curproc->sleepingTime; 
+  return  (curproc->readyTime + curproc->sleepingTime); 
 
 }

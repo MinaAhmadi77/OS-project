@@ -14,7 +14,7 @@ extern uint vectors[];  // in vectors.S: array of 256 entry pointers
 struct spinlock tickslock;
 uint ticks;
 uint policy;
-
+//void processingTimeVariables(void); ////
 void
 tvinit(void)
 {
@@ -51,9 +51,11 @@ trap(struct trapframe *tf)
   case T_IRQ0 + IRQ_TIMER:
     if(cpuid() == 0){
       acquire(&tickslock);
+      processingTimeVariables();
       ticks++;
       wakeup(&ticks);
       release(&tickslock);
+      
     }
     lapiceoi();
     break;
@@ -123,3 +125,4 @@ trap(struct trapframe *tf)
   if(myproc() && myproc()->killed && (tf->cs&3) == DPL_USER)
     exit();
 }
+///added by us
