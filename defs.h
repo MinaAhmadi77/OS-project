@@ -1,3 +1,4 @@
+int policy;//policy=0 default round robin ; policy=1 round robin Quantom ; policy=2 priority
 struct buf;
 struct context;
 struct file;
