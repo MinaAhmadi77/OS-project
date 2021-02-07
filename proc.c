@@ -87,6 +87,8 @@ allocproc(void)
   return 0;
 
 found:
+ 
+  p->creationTime=ticks;//// changed
   p->state = EMBRYO;
   p->pid = nextpid++;
   ///alt
@@ -152,6 +154,9 @@ userinit(void)
   acquire(&ptable.lock);
 
   p->state = RUNNABLE;
+  p->readyTime=ticks;//////
+  p->sleepingTime=p->readyTime - p->sleepingTime;/////
+
 
   release(&ptable.lock);
 }
@@ -218,6 +223,8 @@ fork(void)
   acquire(&ptable.lock);
 
   np->state = RUNNABLE;
+  np->readyTime=ticks;/////
+  np->sleepingTime=np->readyTime - np->sleepingTime;/////
 
   release(&ptable.lock);
 
@@ -265,6 +272,10 @@ exit(void)
   }
 
   // Jump into the scheduler, never to return.
+  /////alt
+  curproc->terminationTime=ticks;
+  curproc->runningTime=curproc->terminationTime - curproc->runningTime;
+  /////alt
   curproc->state = ZOMBIE;
   sched();
   panic("zombie exit");
@@ -362,6 +373,7 @@ scheduler(void)
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
+      p->runningTime=ticks;
       //alt
       if(policy==1)
         p->current_slice = QUANTUM; ///ADDED BY US
@@ -411,6 +423,8 @@ yield(void)
 {
   acquire(&ptable.lock);  //DOC: yieldlock
   myproc()->state = RUNNABLE;
+  myproc()->readyTime=ticks;/////
+  myproc()->sleepingTime=myproc()->readyTime - myproc()->sleepingTime;/////
   sched();
   release(&ptable.lock);
 }
@@ -462,6 +476,7 @@ sleep(void *chan, struct spinlock *lk)
   // Go to sleep.
   p->chan = chan;
   p->state = SLEEPING;
+  p->sleepingTime=ticks;/////
 
   sched();
 
@@ -483,9 +498,14 @@ wakeup1(void *chan)
 {
   struct proc *p;
 
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-    if(p->state == SLEEPING && p->chan == chan)
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state == SLEEPING && p->chan == chan){
       p->state = RUNNABLE;
+      p->readyTime=ticks;/////
+      p->sleepingTime=p->readyTime - p->sleepingTime;/////
+      
+    }
+  }
 }
 
 // Wake up all processes sleeping on chan.
@@ -510,8 +530,11 @@ kill(int pid)
     if(p->pid == pid){
       p->killed = 1;
       // Wake process from sleep if necessary.
-      if(p->state == SLEEPING)
+      if(p->state == SLEEPING){
         p->state = RUNNABLE;
+        p->readyTime=ticks;/////
+        p->sleepingTime=p->readyTime - p->sleepingTime;/////
+      }
       release(&ptable.lock);
       return 0;
     }

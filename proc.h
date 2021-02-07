@@ -59,6 +59,12 @@ struct proc {
   int numsyscall[30];
   int current_slice;
   int priority;
+  int creationTime;
+  int terminationTime;
+  int runningTime;
+  int readyTime;
+  int sleepingTime;
+
 };
 
 // Process memory is laid out contiguously, low addresses first:
