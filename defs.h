@@ -1,4 +1,3 @@
-uint policy;//policy=0 default round robin ; policy=1 round robin Quantom ; policy=2 priority
 struct buf;
 struct context;
 struct file;
@@ -169,6 +168,7 @@ void            timerinit(void);
 // trap.c
 void            idtinit(void);
 extern uint     ticks;
+extern uint     policy;//policy=0 default round robin ; policy=1 round robin Quantom ; policy=2 priority
 void            tvinit(void);
 extern struct spinlock tickslock;
 
