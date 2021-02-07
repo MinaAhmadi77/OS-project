@@ -29,6 +29,9 @@ int getSyscallCounter(int);
 int setPriority(int);
 int getPriority(void);
 int changePolicy(int);
+int cpuBurstTime(void);
+int turnAroundTime(void);
+int waitingTime(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

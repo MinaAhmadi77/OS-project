@@ -126,6 +126,9 @@ int             getSyscallCounter(int);
 int             setPriority(int);
 int             getPriority(void);
 int             changePolicy(int);
+int             cpuBurstTime(void);
+int             turnAroundTime(void);
+int             waitingTime(void);
 
 // swtch.S
 void            swtch(struct context**, struct context*);
@@ -168,7 +171,7 @@ void            timerinit(void);
 // trap.c
 void            idtinit(void);
 extern uint     ticks;
-extern uint     policy;//policy=0 default round robin ; policy=1 round robin Quantom ; policy=2 priority
+extern uint     policy;  //policy=0 default round robin ; policy=1 round robin Quantom ; policy=2 priority
 void            tvinit(void);
 extern struct spinlock tickslock;
 

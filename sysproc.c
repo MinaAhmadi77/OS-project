@@ -140,3 +140,16 @@ int sys_changePolicy(void){
    return -1;
   return changePolicy(plcy);
 }
+
+int sys_cpuBurstTime(void){
+
+  return cpuBurstTime();
+}
+int sys_turnAroundTime(void){
+
+  return turnAroundTime();
+}
+int sys_waitingTime(void){
+
+  return waitingTime();
+}

@@ -653,3 +653,25 @@ int changePolicy(int plcy){
   policy=plcy;
   return policy;
 }
+
+
+int cpuBurstTime(){
+  
+  struct proc *curproc = myproc();
+  return  curproc->runningTime; 
+
+}
+int turnAroundTime(){
+  
+  struct proc *curproc = myproc();
+  
+  return  curproc->terminationTime -  curproc->creationTime; 
+
+}
+int waitingTime(){
+   
+  struct proc *curproc = myproc();
+  
+  return curproc->readyTime -  curproc->sleepingTime; 
+
+}

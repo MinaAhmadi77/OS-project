@@ -26,3 +26,6 @@
 #define SYS_setPriority 25
 #define SYS_getPriority 26
 #define SYS_changePolicy 27
+#define SYS_cpuBurstTime 28
+#define SYS_turnAroundTime 29
+#define SYS_waitingTime 30
