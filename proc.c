@@ -623,6 +623,6 @@ int getPriority(){
 
 }
 int changePolicy(int plcy){
-  
+  policy=plcy;
   return policy;
 }
