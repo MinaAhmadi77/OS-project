@@ -44,7 +44,7 @@ int function(){
             function();
 
         }else{
-         printf(1,"average CBT = %d - average Turnaround time = %d - average Waiting time = %d \n",CBT/10,turnaround/10,waiting/10);
+         printf(1,"average CBT = %d - average Turnaround time = %d - average Waiting time = %d \n",(CBT/10),(turnaround/10),(waiting/10));
          exit();
         }
 

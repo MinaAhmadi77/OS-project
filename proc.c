@@ -13,6 +13,16 @@ struct {
   struct proc proc[NPROC];
 } ptable;
 
+struct{
+
+  int cbt[NPROC];
+  int turnaround[NPROC];
+  int waiting[NPROC];
+
+} tVariables;
+
+
+
 static struct proc *initproc;
 
 int nextpid = 1;
@@ -94,6 +104,7 @@ found:
   ///alt
 
   p->priority=3; ////default priority
+  
   ////alt
   release(&ptable.lock);
 
@@ -288,17 +299,27 @@ wait(void)
   struct proc *p;
   int havekids, pid;
   struct proc *curproc = myproc();
-  
+  int counter=0;
   acquire(&ptable.lock);
   for(;;){
     // Scan through table looking for exited children.
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      counter++;
       if(p->parent != curproc)
         continue;
       havekids = 1;
+      //cprintf("cbt before zombie %d",p->runningTime);
       if(p->state == ZOMBIE){
+
+        if(policy == 1){
+          
+          tVariables.cbt[counter]=p->runningTime;
+          tVariables.turnaround[counter]=p->readyTime + p->sleepingTime + p->runningTime;
+          tVariables.waiting[counter]=p->readyTime + p->sleepingTime;
+        }
         // Found one.
+       // cprintf("cbt after zombie %d",p->runningTime);
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
@@ -307,6 +328,9 @@ wait(void)
         p->parent = 0;
         p->name[0] = 0;
         p->killed = 0;
+        p->runningTime=0;
+        p->readyTime=0;
+        p->sleepingTime=0;
         p->state = UNUSED;
         release(&ptable.lock);
         return pid;
@@ -577,17 +601,40 @@ procdump(void)
 //ADDED CODE BY US
 ///methods
 
-
-void calculate_ready_processes(void){
-
+int findProcIndex (){
 
   struct proc *p;
-  
+  int counter=0;
+  acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        counter ++;
+        if(p->pid == myproc()->pid){
+          break;
+        }
+      
+    
+  }
+  release(&ptable.lock);
+  return counter;
+}
+
+
+void processingTimeVariables(void){
+
+  struct proc *p;
 
   acquire(&ptable.lock);
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 
-      if((p->state) == (RUNNABLE)){
+      if((p->state) == (RUNNING)){
+        (p->runningTime)++;
+       
+      }
+      else if((p->state) == (SLEEPING)){
+        (p->sleepingTime)++;
+       // cprintf("sleeping time %d\n",p->sleepingTime);
+      }
+      else if((p->state) == (RUNNABLE)){
         (p->readyTime)++;
         //cprintf("ready time %d\n",p->readyTime);
       }
@@ -595,55 +642,8 @@ void calculate_ready_processes(void){
   }
   release(&ptable.lock);
 
-  
 }
 
-
-void calculate_sleeping_processes(void){
-
-  struct proc *p;
-  
-
-  acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-
-      if((p->state) == (SLEEPING)){
-        (p->sleepingTime)++;
-       // cprintf("sleeping time %d\n",p->sleepingTime);
-      }
-    
-  }
-  release(&ptable.lock);
-  
-}
-void calculate_running_processes(void){
-
-  struct proc *p;
-  
-
-  acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-
-      if((p->state) == (RUNNING)){
-        (p->runningTime)++;
-       // cprintf("sleeping time %d\n",p->sleepingTime);
-      }
-    
-  }
-  release(&ptable.lock);
-  
-}
-
-void processingTimeVariables(void){
-
-  if(myproc()) {
-
-        calculate_running_processes();
-        calculate_sleeping_processes();
-        calculate_ready_processes();
-      }
-
-}
 
 //system calls
 int getParentID (){
@@ -722,21 +722,31 @@ int changePolicy(int plcy){
 
 int cpuBurstTime(){
   
-  struct proc *curproc = myproc();
-  return  curproc->runningTime; 
+  // struct proc *curproc = myproc();
+  // return  curproc->runningTime; 
+  
+  int res=tVariables.cbt[findProcIndex()];
+  //tVariables.cbt[findProcIndex()]=0;
+        
+  return  res; 
+
 
 }
 int turnAroundTime(){
   
-  struct proc *curproc = myproc();
-  //cprintf("sleeping time ???????????????????????? %d\n",curproc->sleepingTime);
-  return  (curproc->readyTime + curproc->sleepingTime + curproc->runningTime); 
+  int res=tVariables.turnaround[findProcIndex()];
+  //tVariables.turnaround[findProcIndex()]=0;
+        
+  return  res; 
+
 
 }
 int waitingTime(void){
-   
-  struct proc *curproc = myproc();
   
-  return  (curproc->readyTime + curproc->sleepingTime); 
+  
+  int res=tVariables.waiting[findProcIndex()];
+  //tVariables.waiting[findProcIndex()]=0;
+  
+  return  res; 
 
 }
