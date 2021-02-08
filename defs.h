@@ -129,10 +129,7 @@ int             getSyscallCounter(int);
 int             setPriority(int);
 int             getPriority(void);
 int             changePolicy(int);
-//int             waitAndSetTimes(void *, void *, void *);
-int             cpuBurstTime(int);
-int             turnAroundTime(int);
-int             waitingTime(int);
+int             getPriorityOfPID(int);
       
 
 // swtch.S

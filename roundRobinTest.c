@@ -11,7 +11,7 @@ int waiting=0;
 
 void printChild(int id){
 
-     for(int i=0 ; i<100 ; i++){
+     for(int i=0 ; i<1000 ; i++){
 
          printf(1,"/pID:%d/ : /i:%d/  \n ",id,i);
                 
@@ -20,7 +20,7 @@ void printChild(int id){
 }
 void do_parent(int childID,int c[],int t[],int w[],int cbt, int turnaroundtime,int waitingtime){
             
-            printf(1,"childID %d  - CBT = %d - Turnaround time = %d - Waiting time = %d \n",childID,cbt,turnaroundtime,waitingtime);
+           // printf(1,"childID %d  - CBT = %d - Turnaround time = %d - Waiting time = %d \n",childID,cbt,turnaroundtime,waitingtime);
             CBT+=cbt;
             turnaround+=turnaroundtime;
             waiting+=waitingtime;

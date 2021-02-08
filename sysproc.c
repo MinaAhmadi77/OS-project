@@ -150,29 +150,13 @@ int sys_changePolicy(void){
   return changePolicy(plcy);
 }
 
-int sys_cpuBurstTime(void){
-  
-  int pid;
+
+int sys_getPriorityOfPID(void){
+    int pid;
   if(argint(0, &pid) < 0)
    return -1;
 
-  return cpuBurstTime(pid);
-}
-int sys_turnAroundTime(void){
-
-  int pid;
-  if(argint(0, &pid) < 0)
-   return -1;
-
-  return turnAroundTime(pid);
-}
-int sys_waitingTime(void){
-  
-  int pid;
-  if(argint(0, &pid) < 0)
-   return -1;
-  
-  return waitingTime(pid);
+  return getPriorityOfPID(pid);
 }
 
 // int sys_waitAndSetTimes(void){

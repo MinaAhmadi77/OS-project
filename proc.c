@@ -312,7 +312,7 @@ wait(int * cpuBurst , int * turnaround , int * waiting)
       //cprintf("cbt before zombie %d",p->runningTime);
       if(p->state == ZOMBIE){
 
-        if(policy == 1){
+        if(policy == 1 || policy==2){
           
           *cpuBurst=p->runningTime;
           *turnaround=p->readyTime + p->sleepingTime + p->runningTime;
@@ -333,6 +333,8 @@ wait(int * cpuBurst , int * turnaround , int * waiting)
         p->sleepingTime=0;
         p->state = UNUSED;
         release(&ptable.lock);
+        if(policy==2)
+          return p->priority;
         return pid;
       }
     }
@@ -726,33 +728,21 @@ int changePolicy(int plcy){
 }
 
 
-int cpuBurstTime(int inputPID){
+
+int getPriorityOfPID(int ID){
+  struct proc *p;
   
-  // struct proc *curproc = myproc();
-  // return  curproc->runningTime; 
-  
-  int res=tVariables.cbt[findProcIndex(inputPID)];
-  //tVariables.cbt[findProcIndex()]=0;
+  acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
         
-  return  res; 
+        if(p->pid == ID){
 
+          break;
+        }
+      
+    
+  }
+  release(&ptable.lock);
 
-}
-int turnAroundTime(int inputPID){
-  
-  int res=tVariables.turnaround[findProcIndex(inputPID)];
-  //tVariables.turnaround[findProcIndex()]=0;
-        
-  return  res; 
-
-
-}
-int waitingTime(int inputPID){
-  
-  
-  int res=tVariables.waiting[findProcIndex(inputPID)];
-  //tVariables.waiting[findProcIndex()]=0;
-  
-  return  res; 
-
+  return p->priority;
 }
