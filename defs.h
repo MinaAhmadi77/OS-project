@@ -130,6 +130,7 @@ int             setPriority(int);
 int             getPriority(void);
 int             changePolicy(int);
 int             getPriorityOfPID(int);
+int             setQueqeNumber(int);
       
 
 // swtch.S

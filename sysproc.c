@@ -152,23 +152,22 @@ int sys_changePolicy(void){
 
 
 int sys_getPriorityOfPID(void){
-    int pid;
+   int pid;
   if(argint(0, &pid) < 0)
    return -1;
 
   return getPriorityOfPID(pid);
 }
 
-// int sys_waitAndSetTimes(void){
+int sys_setQueqeNumber(void){
 
-//   int *cbt, *tat, *wt;
-//   if (argptr(0, (void*)&cbt, sizeof(cbt)) < 0)
-//     return -1;
-//   if (argptr(1, (void*)&tat, sizeof(cbt)) < 0)
-//     return -1;
-//   if (argptr(2, (void*)&wt, sizeof(wt)) < 0)
-//     return -1;
-  
+  int qNum;
+  if(argint(0, &qNum) < 0)
+   return -1;
 
-//   return waitAndSetTimes(cbt, tat, wt);
-// }
+  return setQueqeNumber(qNum);
+}
+
+
+
+

@@ -97,7 +97,7 @@ found:
   ///alt
 
   p->priority=3; ////default priority
-  p->queqeNumber=rand() % 4;
+  //p->queqeNumber=rand() % 4;
   ////alt
   release(&ptable.lock);
 
@@ -305,7 +305,7 @@ wait(int * cpuBurst , int * turnaround , int * waiting)
       //cprintf("cbt before zombie %d",p->runningTime);
       if(p->state == ZOMBIE){
 
-        if(policy == 1 || policy==2){
+        if(policy == 1 || policy==2 || policy==3){
           
           *cpuBurst=p->runningTime;
           *turnaround=p->readyTime + p->sleepingTime + p->runningTime;
@@ -326,9 +326,12 @@ wait(int * cpuBurst , int * turnaround , int * waiting)
         p->sleepingTime=0;
         p->state = UNUSED;
         release(&ptable.lock);
-        if(policy==2)
-          return p->priority;
-        return pid;
+          ////for multiLayeredScheduling
+
+          if(policy==10)
+            return pid;
+          return p->queqeNumber;
+
       }
     }
 
@@ -419,13 +422,19 @@ scheduler(void)
     struct proc *p;
     struct cpu *c = mycpu();
     c->proc = 0;
+    int i=0;
+    int found=0;
   
     struct proc *iterator;  //added by us
     for(;;){
       // Enable interrupts on this processor.
       sti();
 
-      for(int i=1 ; i<5 ; i++){
+
+     if(found==0)
+        i++;
+       
+       // i=1;
 
         switch (i){
 
@@ -454,11 +463,11 @@ scheduler(void)
       // Loop over process table looking for process to run.
     acquire(&ptable.lock);
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-        if(p->state != RUNNABLE)
+        if(p->state != RUNNABLE || p->queqeNumber!=i)
           continue;
-        
-        if(p->queqeNumber!=i)
-          continue;
+          
+        // if(p->queqeNumber!=i)
+        //   continue;
        
         if(policy ==2 || policy==3){  ////priority and reverese priority
          
@@ -481,6 +490,7 @@ scheduler(void)
 
 
         }
+        found=1;
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
         // before jumping back to us.
@@ -498,12 +508,15 @@ scheduler(void)
 
         // Process is done running for now.
         // It should have changed its p->state before coming back.
+        
         c->proc = 0;
       }
       release(&ptable.lock);
 
+      
+
     }
-   }
+   
   }
 
 
@@ -694,30 +707,30 @@ procdump(void)
 //ADDED CODE BY US
 ///methods
 
-static long randstate = 1;
-unsigned int
-rand()
-{
-  randstate = randstate * 1664525 + 1013904223;
-  return randstate;
-}
+// static long randstate = 1;
+// unsigned int
+// rand()
+// {
+//   randstate = randstate * 1664525 + 1013904223;
+//   return randstate;
+// }
 
-int findProcIndex (int inputPID){
+// int findProcIndex (int inputPID){
 
-  struct proc *p;
-  int counter=0;
-  acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-        counter ++;
-        if(p->pid == inputPID){
-          break;
-        }
+//   struct proc *p;
+//   int counter=0;
+//   acquire(&ptable.lock);
+//     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+//         counter ++;
+//         if(p->pid == inputPID){
+//           break;
+//         }
       
     
-  }
-  release(&ptable.lock);
-  return counter;
-}
+//   }
+//   release(&ptable.lock);
+//   return counter;
+// }
 
 
 void processingTimeVariables(void){
@@ -842,4 +855,19 @@ int getPriorityOfPID(int ID){
   release(&ptable.lock);
 
   return p->priority;
+}
+
+
+
+int setQueqeNumber(int qNum){
+
+  struct proc *curproc = myproc();
+
+  if(qNum>4 || qNum<1){ 
+    qNum=1;
+  }
+  curproc->queqeNumber=qNum;
+  
+  return curproc->queqeNumber;
+
 }

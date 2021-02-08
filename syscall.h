@@ -27,5 +27,6 @@
 #define SYS_getPriority 26
 #define SYS_changePolicy 27
 #define SYS_getPriorityOfPID 28
+#define SYS_setQueqeNumber 29
 
 
