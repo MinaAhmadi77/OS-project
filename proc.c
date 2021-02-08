@@ -97,7 +97,7 @@ found:
   ///alt
 
   p->priority=3; ////default priority
-  //p->queqeNumber=rand() % 4;
+  p->queqeNumber=1;
   ////alt
   release(&ptable.lock);
 
@@ -431,11 +431,11 @@ scheduler(void)
       sti();
 
 
-     if(found==0)
-        i++;
+     
        
        // i=1;
-
+       acquire(&ptable.lock);
+      while(i<4){
         switch (i){
 
           case 1:
@@ -461,7 +461,7 @@ scheduler(void)
       
     struct proc *highestPriority;/////////////////////////////////
       // Loop over process table looking for process to run.
-    acquire(&ptable.lock);
+    
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
         if(p->state != RUNNABLE || p->queqeNumber!=i)
           continue;
@@ -510,6 +510,9 @@ scheduler(void)
         // It should have changed its p->state before coming back.
         
         c->proc = 0;
+      }
+      if(found==0)
+        i++;
       }
       release(&ptable.lock);
 
