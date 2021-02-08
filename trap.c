@@ -116,7 +116,7 @@ trap(struct trapframe *tf)
         else 
           yield();
       }
-      else if(policy==0 || policy==2)
+      else if(policy==0 || policy==2 || policy==3)
           yield();
   }
  //////alt

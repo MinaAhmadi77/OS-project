@@ -6,20 +6,12 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
-
+#include "stddef.h"
 
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
 } ptable;
-
-struct{
-
-  int cbt[NPROC];
-  int turnaround[NPROC];
-  int waiting[NPROC];
-
-} tVariables;
 
 
 
@@ -30,6 +22,7 @@ extern void forkret(void);
 extern void trapret(void);
 
 static void wakeup1(void *chan);
+unsigned int rand(void);
 
 void
 pinit(void)
@@ -104,7 +97,7 @@ found:
   ///alt
 
   p->priority=3; ////default priority
-  
+  p->queqeNumber=rand() % 4;
   ////alt
   release(&ptable.lock);
 
@@ -362,61 +355,157 @@ wait(int * cpuBurst , int * turnaround , int * waiting)
 //      via swtch back to the scheduler.
 // void
 
+// void
+// scheduler(void)
+// {
+//   struct proc *p;
+//   struct cpu *c = mycpu();
+//   c->proc = 0;
+ 
+//   struct proc *iterator;  //added by us
+//   for(;;){
+//     // Enable interrupts on this processor.
+//     sti();
+    
+//   struct proc *highestPriority;/////////////////////////////////
+//     // Loop over process table looking for process to run.
+//   acquire(&ptable.lock);
+//     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+//       if(p->state != RUNNABLE)
+//         continue;
+//     if(policy ==2){
+//       highestPriority=p;////////////////////
+
+//       for(iterator= ptable.proc; iterator < &ptable.proc[NPROC]; iterator++){////////// find the highest priority
+//         if(iterator->state != RUNNABLE)
+//           continue;
+//         if((iterator->priority)<(highestPriority->priority))
+//           highestPriority=iterator;
+//       }///////////////////////////
+
+//       p=highestPriority;///////////
+
+
+//     }
+//        // Switch to chosen process.  It is the process's job
+//       // to release ptable.lock and then reacquire it
+//       // before jumping back to us.
+//       c->proc = p;
+//       switchuvm(p);
+//       p->state = RUNNING;
+     
+//       //alt
+//       if(policy==1)
+//         p->current_slice = QUANTUM; ///ADDED BY US
+
+//        ///alt
+//       swtch(&(c->scheduler), p->context);
+//       switchkvm();
+
+//       // Process is done running for now.
+//       // It should have changed its p->state before coming back.
+//       c->proc = 0;
+//     }
+//     release(&ptable.lock);
+
+//   }
+// }
+
+//MULTILAYERED QUEQE SCHEDULER;
 void
 scheduler(void)
 {
-  struct proc *p;
-  struct cpu *c = mycpu();
-  c->proc = 0;
- 
-  struct proc *iterator;  //added by us
-  for(;;){
-    // Enable interrupts on this processor.
-    sti();
-    
-  struct proc *highestPriority;/////////////////////////////////
-    // Loop over process table looking for process to run.
-  acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
-    if(policy ==2){
-      highestPriority=p;////////////////////
+  
+    struct proc *p;
+    struct cpu *c = mycpu();
+    c->proc = 0;
+  
+    struct proc *iterator;  //added by us
+    for(;;){
+      // Enable interrupts on this processor.
+      sti();
 
-      for(iterator= ptable.proc; iterator < &ptable.proc[NPROC]; iterator++){////////// find the highest priority
-        if(iterator->state != RUNNABLE)
+      for(int i=1 ; i<5 ; i++){
+
+        switch (i){
+
+          case 1:
+            policy=0;
+            break;
+
+          case 2:
+            policy=2;
+            break;
+
+
+          case 3:
+            policy=3;
+            break;
+
+          case 4:
+            
+            policy=1;
+            break;
+
+
+        }
+      
+    struct proc *highestPriority;/////////////////////////////////
+      // Loop over process table looking for process to run.
+    acquire(&ptable.lock);
+      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        if(p->state != RUNNABLE)
           continue;
-        if((iterator->priority)<(highestPriority->priority))
-          highestPriority=iterator;
-      }///////////////////////////
+        
+        if(p->queqeNumber!=i)
+          continue;
+       
+        if(policy ==2 || policy==3){  ////priority and reverese priority
+         
+          highestPriority=p;////////////////////
 
-      p=highestPriority;///////////
+          for(iterator= ptable.proc; iterator < &ptable.proc[NPROC]; iterator++){////////// find the highest priority
+            if(iterator->state != RUNNABLE)
+              continue;
+            if(policy==2) { 
+              if((iterator->priority)<(highestPriority->priority))
+                highestPriority=iterator;
+            }else{
 
+              if((iterator->priority)>(highestPriority->priority))
+                highestPriority=iterator;
+            }
+          }///////////////////////////
+
+          p=highestPriority;///////////
+
+
+        }
+        // Switch to chosen process.  It is the process's job
+        // to release ptable.lock and then reacquire it
+        // before jumping back to us.
+        c->proc = p;
+        switchuvm(p);
+        p->state = RUNNING;
+      
+        //alt
+        if(policy==1)
+          p->current_slice = QUANTUM; ///ADDED BY US
+
+        ///alt
+        swtch(&(c->scheduler), p->context);
+        switchkvm();
+
+        // Process is done running for now.
+        // It should have changed its p->state before coming back.
+        c->proc = 0;
+      }
+      release(&ptable.lock);
 
     }
-       // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
-     
-      //alt
-      if(policy==1)
-        p->current_slice = QUANTUM; ///ADDED BY US
-
-       ///alt
-      swtch(&(c->scheduler), p->context);
-      switchkvm();
-
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
-    }
-    release(&ptable.lock);
-
+   }
   }
-}
+
 
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state. Saves and restores
@@ -605,6 +694,14 @@ procdump(void)
 //ADDED CODE BY US
 ///methods
 
+static long randstate = 1;
+unsigned int
+rand()
+{
+  randstate = randstate * 1664525 + 1013904223;
+  return randstate;
+}
+
 int findProcIndex (int inputPID){
 
   struct proc *p;
@@ -720,7 +817,7 @@ int getPriority(){
 }
 int changePolicy(int plcy){
   
-  if(plcy>2|| plcy<0){
+  if(plcy>3 || plcy<0){ ////  3 for  reverse priority
     plcy=0;
   }
   policy=plcy;

@@ -64,6 +64,7 @@ struct proc {
   int runningTime;
   int readyTime;
   int sleepingTime;
+  int queqeNumber;
 
 };
 
