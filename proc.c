@@ -641,6 +641,7 @@ void processingTimeVariables(void){
       case RUNNABLE:
         (p->readyTime)++;
         break;
+     
       default :
         break;
       }
