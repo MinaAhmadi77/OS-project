@@ -420,12 +420,13 @@ scheduler(void)
 {
   
 
-  if(multiLayeredFlag==0){
+  //if(multiLayeredFlag==0){
 
     struct proc *p;
     struct cpu *c = mycpu();
     c->proc = 0;
-  
+    int i=1;
+    int found=0;
     struct proc *iterator;  //added by us
     for(;;){
       // Enable interrupts on this processor.
@@ -433,67 +434,48 @@ scheduler(void)
       
     struct proc *highestPriority;/////////////////////////////////
       // Loop over process table looking for process to run.
-      acquire(&ptable.lock);
-      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-        if(p->state != RUNNABLE)
-          continue;
-      if(policy ==2){
-        highestPriority=p;////////////////////
-
-        for(iterator= ptable.proc; iterator < &ptable.proc[NPROC]; iterator++){////////// find the highest priority
-          if(iterator->state != RUNNABLE)
-            continue;
-          if((iterator->priority)<(highestPriority->priority))
-            highestPriority=iterator;
-        }///////////////////////////
-
-        p=highestPriority;///////////
-
-
-      }
-        // Switch to chosen process.  It is the process's job
-        // to release ptable.lock and then reacquire it
-        // before jumping back to us.
-        c->proc = p;
-        switchuvm(p);
-        p->state = RUNNING;
-      
-        //alt
-        if(policy==1)
-          p->current_slice = QUANTUM; ///ADDED BY US
-
-        ///alt
-        swtch(&(c->scheduler), p->context);
-        switchkvm();
-
-        // Process is done running for now.
-        // It should have changed its p->state before coming back.
-        c->proc = 0;
-      }
-      release(&ptable.lock);
-
-    }
-
-
-
-  }
-
-
-else{
-
-    struct proc *p;
-    struct cpu *c = mycpu();
-    c->proc = 0;
-    int i=1;
-    int found=0;
-  
-    struct proc *iterator;  //added by us
-    for(;;){
-      // Enable interrupts on this processor.
-      sti();
       i=1;
-       acquire(&ptable.lock);
-      while(i<=4){
+      acquire(&ptable.lock);
+      if(multiLayeredFlag==0){
+        for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+          if(p->state != RUNNABLE)
+            continue;
+        if(policy ==2){
+          highestPriority=p;////////////////////
+
+          for(iterator= ptable.proc; iterator < &ptable.proc[NPROC]; iterator++){////////// find the highest priority
+            if(iterator->state != RUNNABLE)
+              continue;
+            if((iterator->priority)<(highestPriority->priority))
+              highestPriority=iterator;
+          }///////////////////////////
+
+          p=highestPriority;///////////
+
+
+        }
+          // Switch to chosen process.  It is the process's job
+          // to release ptable.lock and then reacquire it
+          // before jumping back to us.
+          c->proc = p;
+          switchuvm(p);
+          p->state = RUNNING;
+        
+          //alt
+          if(policy==1)
+            p->current_slice = QUANTUM; ///ADDED BY US
+
+          ///alt
+          swtch(&(c->scheduler), p->context);
+          switchkvm();
+
+          // Process is done running for now.
+          // It should have changed its p->state before coming back.
+          c->proc = 0;
+        }
+      }else{
+
+         while(i<=4){
         
         switch (i){
 
@@ -518,9 +500,9 @@ else{
 
         }
       
-    struct proc *highestPriority;/////////////////////////////////
+      struct proc *highestPriority;/////////////////////////////////
       // Loop over process table looking for process to run.
-    
+      found=0;
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
         if(p->state != RUNNABLE || p->queqeNumber!=i)
           continue;
@@ -550,7 +532,7 @@ else{
 
         }
         found=1;
-        cprintf("fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        //cprintf("fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
         // before jumping back to us.
@@ -571,23 +553,28 @@ else{
         
         c->proc = 0;
       }
-      if(found==0)
+        if(found==0)
         i++;
       }
-      found=0;
+    
+      
       // if(i==5)
       //   i=1;
+
+      }
       release(&ptable.lock);
 
-      
-
     }
+
+
+
+ 
    
   }
 
 
 
-}
+
 
 
 // Enter scheduler.  Must hold only ptable.lock
