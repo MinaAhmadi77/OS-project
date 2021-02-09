@@ -533,7 +533,7 @@ else{
           highestPriority=p;////////////////////
 
           for(iterator= ptable.proc; iterator < &ptable.proc[NPROC]; iterator++){////////// find the highest priority
-            if(iterator->state != RUNNABLE)
+            if(iterator->state != RUNNABLE || p->queqeNumber!=i)
               continue;
             if(policy==2) { 
               if((iterator->priority)<(highestPriority->priority))
@@ -550,6 +550,7 @@ else{
 
         }
         found=1;
+        cprintf("fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
         // before jumping back to us.
