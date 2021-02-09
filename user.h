@@ -31,6 +31,7 @@ int getPriority(void);
 int changePolicy(int);
 int getPriorityOfPID(int);
 int setQueqeNumber(int);
+int changeMultiFlag(int);
 
 // ulib.c
 int stat(const char*, struct stat*);

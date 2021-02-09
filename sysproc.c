@@ -169,5 +169,15 @@ int sys_setQueqeNumber(void){
 }
 
 
+int sys_changeMultiFlag(void){
 
+    int input;
+    if(argint(0, &input) < 0)
+    return -1;
+
+    return changeMultiFlag(input);
+
+
+
+}
 

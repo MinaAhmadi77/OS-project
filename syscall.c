@@ -113,6 +113,7 @@ extern int sys_getPriority(void);
 extern int sys_changePolicy(void);
 extern int sys_getPriorityOfPID(void);
 extern int sys_setQueqeNumber(void);
+extern int sys_changeMultiFlag(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -144,7 +145,8 @@ static int (*syscalls[])(void) = {
 [SYS_changePolicy] sys_changePolicy,
 [SYS_getPriorityOfPID] sys_getPriorityOfPID,
 [SYS_setQueqeNumber]   sys_setQueqeNumber,
-};
+[SYS_changeMultiFlag]  sys_changeMultiFlag,
+}; 
 
 void
 syscall(void)

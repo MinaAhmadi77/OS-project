@@ -28,5 +28,6 @@
 #define SYS_changePolicy 27
 #define SYS_getPriorityOfPID 28
 #define SYS_setQueqeNumber 29
+#define SYS_changeMultiFlag 30
 
 

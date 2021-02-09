@@ -131,8 +131,8 @@ int             getPriority(void);
 int             changePolicy(int);
 int             getPriorityOfPID(int);
 int             setQueqeNumber(int);
-      
-
+extern uint multiLayeredFlag;     
+int             changeMultiFlag(int);
 // swtch.S
 void            swtch(struct context**, struct context*);
 

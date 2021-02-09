@@ -9,7 +9,7 @@ int turnaround=0;
 int waiting=0;
 int counter=0;
 
-int layerTimes[3][4];
+int layerTimes[3][5];
 
 
 
@@ -27,9 +27,9 @@ void do_parent(int childQnumber,int c[],int t[],int w[],int cbt, int turnaroundt
 
 
 
-            layerTimes[0][childQnumber-1]+=cbt;
-            layerTimes[1][childQnumber-1]+=turnaround;
-            layerTimes[2][childQnumber-1]+=waitingtime;
+            layerTimes[0][childQnumber]+=cbt;
+            layerTimes[1][childQnumber]+=turnaround;
+            layerTimes[2][childQnumber]+=waitingtime;
 
             CBT+=cbt;
             turnaround+=turnaroundtime;
@@ -105,8 +105,9 @@ int main(){
 
         printf(1,"\n\n\naverage CBT = %d - average Turnaround time = %d - average Waiting time = %d \n",(CBT/30),(turnaround/30),(waiting/30));
 
-    for(int i=1;i<=4;i++){
-        printf(1,"\nQUEQE i=%d average CBT = %d - average Turnaround time = %d - average Waiting time = %d \n",i,(layerTimes[0][i-1]/10),(layerTimes[1][i-1]/10),(layerTimes[2][i-1]/10));
+    for(int i=0;i<4;i++){
+       
+        printf(1,"\nQUEQE i=%d average CBT = %d - average Turnaround time = %d - average Waiting time = %d \n",i+1,(layerTimes[0][i+1]/10),(layerTimes[1][i+1]/10),(layerTimes[2][i+1]/10));
 
     }
    

@@ -187,6 +187,7 @@ UPROGS=\
 	_setPriorityTest\
 	_changePolicyTest\
 	_roundRobinTest\
+	_Test\
 	_prioritySchedTest\
 
 fs.img: mkfs README $(UPROGS)
@@ -263,6 +264,7 @@ EXTRA=\
 	setPriorityTest.c\
 	changePolicyTest.c\
 	roundRobinTest.c\
+	Test.c\
 	priorityShedTes.c\
 	printf.c umalloc.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
