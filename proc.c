@@ -327,10 +327,20 @@ wait(int * cpuBurst , int * turnaround , int * waiting)
         p->state = UNUSED;
         release(&ptable.lock);
           ////for multiLayeredScheduling
+        
+          if(multiLayeredFlag!=0)
+            return p->queqeNumber;
 
-          if(policy==10)
-            return pid;
-          return p->queqeNumber;
+          else{
+
+            if(policy==2 || policy==3)
+              return p->priority;
+
+            if(policy==0 || policy==1)
+              return pid;
+
+
+          }
 
       }
     }
