@@ -422,20 +422,17 @@ scheduler(void)
     struct proc *p;
     struct cpu *c = mycpu();
     c->proc = 0;
-    int i=0;
+    int i=1;
     int found=0;
   
     struct proc *iterator;  //added by us
     for(;;){
       // Enable interrupts on this processor.
       sti();
-
-
-     
-       
-       // i=1;
+      i=1;
        acquire(&ptable.lock);
-      while(i<4){
+      while(i<=4){
+        
         switch (i){
 
           case 1:
@@ -514,6 +511,9 @@ scheduler(void)
       if(found==0)
         i++;
       }
+      found=0;
+      // if(i==5)
+      //   i=1;
       release(&ptable.lock);
 
       
